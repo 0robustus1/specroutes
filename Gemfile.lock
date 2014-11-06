@@ -57,6 +57,11 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
+    pry-doc (0.6.0)
+      pry (~> 0.9)
+      yard (~> 0.8)
+    pry-rails (0.3.2)
+      pry (>= 0.9.10)
     rack (1.4.5)
     rack-cache (1.2)
       rack (>= 0.4)
@@ -103,6 +108,7 @@ GEM
       polyglot
       polyglot (>= 0.3.1)
     tzinfo (0.3.41)
+    yard (0.8.7.6)
 
 PLATFORMS
   ruby
@@ -110,6 +116,8 @@ PLATFORMS
 DEPENDENCIES
   jquery-rails
   pry (~> 0.9)
+  pry-doc (= 0.6.0)
+  pry-rails (= 0.3.2)
   rspec (~> 2.14)
   specroutes!
   sqlite3
