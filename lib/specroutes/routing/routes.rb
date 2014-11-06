@@ -18,18 +18,31 @@ module Specroutes::Routing
 
     def execute_methods
       this = self
-      block = proc do
-        this.methods.each { |m| this.execute_method(self, m) }
-      end
+      block = proc { this.methods.each { |m| this.execute_method(self, m) } }
       rails_router.eval_block(block)
     end
 
     def execute_method(route_instance, method)
-      after = delegate_helper.method_name(after, method[:method], default_delegate_after)
-      before = delegate_helper.method_name(before, method[:method], default_delegate_before)
-      send(before, *method[:args], &method[:block]) if method[:hooks] && respond_to?(before, true)
-      result = route_instance.send(method[:method], *method[:args], &method[:block])
-      send(after, result, *method[:args], &method[:block]) if method[:hooks] && respond_to?(after, true)
+      before, after = callbacks(method)
+      send_call(method, method_name: before) if hook_callable?(method, before)
+      result = send_call(method, to: route_instance)
+      send_call(method, result, method_name: after) if hook_callable?(method, after)
+    end
+
+    def callbacks(method, before: nil, after: nil)
+      after_callback = delegate_helper.
+        method_name(after, method[:method], default_delegate_after)
+      before_callback = delegate_helper.
+        method_name(before, method[:method], default_delegate_before)
+      [before_callback, after_callback]
+    end
+
+    def send_call(method, *added_args, method_name: method[:method], to: self)
+      to.send(method_name, *method[:args], *added_args, &method[:block])
+    end
+
+    def hook_callable?(method, method_name, to: self)
+      method[:hooks] && to.respond_to?(method_name, true)
     end
 
     def initialize(rails_router)
