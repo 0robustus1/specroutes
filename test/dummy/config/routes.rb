@@ -1,4 +1,4 @@
-Dummy::Application.routes.draw do
+Specroutes.define(Dummy::Application.routes) do
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
@@ -12,6 +12,8 @@ Dummy::Application.routes.draw do
 
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
+
+  resources :products
 
   # Sample resource route with options:
   #   resources :products do
