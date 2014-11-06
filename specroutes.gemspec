@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.version     = Specroutes::VERSION
   s.authors     = ['Tim Reddehase']
   s.email       = ['uni@rightsrestricted.com']
-  s.homepage    = 'masterthesis.rightsrestricted.com'
+  s.homepage    = 'http://masterthesis.rightsrestricted.com'
   s.summary     = 'Generate WADL specification from routes.'
   s.description = 'Generate WADL specification from routes.'
 
