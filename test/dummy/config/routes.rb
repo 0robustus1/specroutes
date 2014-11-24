@@ -14,6 +14,7 @@ Specroutes.define(Dummy::Application.routes) do
   #   resources :products
 
   resources :products
+  specified_get '/hola/:machine' => 'products#index'
 
   # Sample resource route with options:
   #   resources :products do
