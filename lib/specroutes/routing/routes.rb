@@ -2,8 +2,9 @@ module Specroutes::Routing
   class Routes
     include Specroutes::UtilityBelt::DelegateCollector::InstanceMethods
     extend Specroutes::UtilityBelt::DelegateCollector::ClassMethods
+    include Specroutes::Routing::Interface::Routes
 
-    attr_accessor :rails_router
+    attr_accessor :rails_router, :specification
 
     default_delegate_before { |m| :"before_#{m}" }
     default_delegate_after { |m| :"after_#{m}" }
@@ -14,6 +15,7 @@ module Specroutes::Routing
     hooked_refer_to :delete
     refer_to :resources
     refer_to :resource
+    refer_to :match
 
 
     def execute_methods
@@ -47,6 +49,7 @@ module Specroutes::Routing
 
     def initialize(rails_router)
       self.rails_router = rails_router
+      self.specification = Specroutes::Specification.new(rails_router)
     end
 
     def draw(&block)
@@ -54,6 +57,7 @@ module Specroutes::Routing
       instance_eval(&block)
       execute_methods
       rails_router.finalize!
+      specification.register_with_application
       nil
     end
 

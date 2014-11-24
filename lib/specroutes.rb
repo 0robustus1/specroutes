@@ -6,4 +6,5 @@ module Specroutes
 end
 
 require 'specroutes/utility_belt'
+require 'specroutes/specification'
 require 'specroutes/routing'

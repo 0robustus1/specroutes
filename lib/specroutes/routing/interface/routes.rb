@@ -2,27 +2,24 @@ module Specroutes::Routing
   module Interface
     module Routes
 
-      def specified_get(path, options)
-        specified_match(path, options.merge!(method: 'get'))
+      def specified_get(*args, &block)
+        specified_match('get', *args, &block)
       end
 
-      def specified_post(path, options)
-        specified_match(path, options.merge!(method: 'post'))
+      def specified_post(*args, &block)
+        specified_match('post', *args, &block)
       end
 
-      def specified_put(path, options)
-        specified_match(path, options.merge!(method: 'put'))
+      def specified_put(*args, &block)
+        specified_match('put', *args, &block)
       end
 
-      def specified_delete(path, options)
-        specified_match(path, options.merge!(method: 'delete'))
+      def specified_delete(*args, &block)
+        specified_match('delete', *args, &block)
       end
 
-      def specified_match(path, options)
-        standard_path, query_path = path_portions(path)
-        standard_opt, spec_opts = option_portions(path)
-        spec = RouteSpecification.new(path, options)
-        match(standard_path, standard_opt)
+      def specified_match(method, *args, &_block)
+        spec = RouteSpecification.new(method, args)
         match(*spec.match_options)
         spec.define_constraints
         spec.register(specification)
