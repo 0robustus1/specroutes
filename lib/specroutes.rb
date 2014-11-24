@@ -3,8 +3,14 @@ module Specroutes
     routes = Specroutes::Routing::Routes.new(rails_router)
     routes.draw(&block)
   end
+
+  def self.serialize(serializer=nil)
+    serializer ||= Specroutes::Serializer.default_serializer
+    serializer.serialize
+  end
 end
 
 require 'specroutes/utility_belt'
+require 'specroutes/serializer'
 require 'specroutes/specification'
 require 'specroutes/routing'
