@@ -39,6 +39,16 @@ module Specroutes::Routing
         raise NotImplementedError, 'method define_constraints is not implemented, yet'
       end
 
+      def docs
+        docs =
+          if options[:doc].is_a?(Hash)
+            [options[:doc]]
+          else
+            Array(options[:doc])
+          end
+        docs + Array(options[:docs])
+      end
+
       private
       def split_rails_path!
         self.rails_path, query_params = rails_path.split('?')

@@ -45,8 +45,21 @@ module Specroutes::Serializer
     def define_resource!(resources_el, resource)
       resource_el = ::XML::Node.new('resource')
       resource_el['path'] = resource.path
+      define_docs!(resource_el, resource)
       define_method!(resource_el, resource)
       resources_el << resource_el
+    end
+
+    def define_docs!(resource_el, resource)
+      resource.docs.each { |doc| define_doc!(resource_el, doc) }
+    end
+
+    def define_doc!(resource_el, lang:, title: nil, body:)
+      doc_el = ::XML::Node.new('doc')
+      doc_el['xml:lang'] = lang
+      doc_el['title'] = title if title
+      doc_el << ::XML::Node.new_text(body)
+      resource_el << doc_el
     end
 
     def define_method!(resource_el, resource)
