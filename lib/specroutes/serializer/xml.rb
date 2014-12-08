@@ -42,7 +42,25 @@ module Specroutes::Serializer
       method_el = ::XML::Node.new('method')
       method_el['name'] = resource.method
       method_el['id'] = resource.identifier
+      define_params!(method_el, resource)
       resource_el << method_el
+    end
+
+    def define_params!(method_el, resource)
+      resource.query_params.each { |q| define_param!(method_el, q) }
+    end
+
+    def define_param!(method_el, query_param)
+      param, value = query_param.split('=')
+      param_el = ::XML::Node.new('param')
+      param_el['name'] = param
+      if value
+        param_el['style'] = 'query'
+        param_el['type'] = value
+      else
+        param_el['style'] = 'positional'
+      end
+      method_el << param_el
     end
   end
 end
