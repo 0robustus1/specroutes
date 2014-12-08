@@ -1,3 +1,4 @@
+require 'specroutes/serializer/errors'
 require 'specroutes/serializer/xml'
 
 module Specroutes
