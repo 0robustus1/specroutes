@@ -4,6 +4,17 @@ module Specroutes::Serializer
   class XML
     attr_accessor :specification
 
+    DATATYPE_MAPPING = {
+      string: 'xsd:string',
+      boolean: 'xsd:boolean',
+      bool: 'xsd:boolean',
+      double: 'xsd:double',
+      float: 'xsd:float',
+      int: 'xsd:int',
+      integer: 'xsd:integer',
+      long: 'xsd:long',
+    }
+
     def initialize(specification)
       self.specification = specification
     end
@@ -56,11 +67,20 @@ module Specroutes::Serializer
       param_el['name'] = param
       if value
         param_el['style'] = 'query'
-        param_el['type'] = value
+        param_el['type'] = typefy_to_xsd(value)
       else
         param_el['style'] = 'positional'
       end
       method_el << param_el
+    end
+
+    def typefy_to_xsd(value)
+      if value.start_with?('xsd:')
+        value
+      else
+        DATATYPE_MAPPING[value.to_sym] ||
+          raise(Errors::UnknownDatatypeError.new(value))
+      end
     end
   end
 end
