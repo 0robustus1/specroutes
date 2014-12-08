@@ -1,15 +1,15 @@
 module Specroutes::Routing
   module Interface
     class RouteSpecification
-      attr_accessor :path, :options, :method, :to
+      attr_accessor :rails_path, :options, :method, :to
 
       def initialize(method, args)
         self.method = method
         self.options = args.extract_options!
         if args.any?
-          self.path = args.first
+          self.rails_path = args.first
         else
-          self.path, self.to = options.find { |k, _v| k.is_a?(String) }
+          self.rails_path, self.to = options.find { |k, _v| k.is_a?(String) }
         end
       end
 
@@ -25,8 +25,12 @@ module Specroutes::Routing
         end
       end
 
+      def path
+        rails_path.gsub(/:([^\/]+)/, '{\1}')
+      end
+
       def identifier
-        path
+        rails_path
       end
 
       def define_constraints
