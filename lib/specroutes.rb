@@ -13,4 +13,5 @@ end
 require 'specroutes/utility_belt'
 require 'specroutes/serializer'
 require 'specroutes/specification'
+require 'specroutes/constraints'
 require 'specroutes/routing'
