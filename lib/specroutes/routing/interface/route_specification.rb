@@ -35,7 +35,11 @@ module Specroutes::Routing
       end
 
       def define_constraints
-        # raise NotImplementedError, 'method define_constraints is not implemented, yet'
+        if query_params.present?
+          allowed = query_params.map { |p| p.split('=', 2).first }
+          constraint_klass = Specroutes::Constraints::QueryParamConstraint
+          self.options[:constraints] = constraint_klass.new(allowed)
+        end
       end
 
       def docs

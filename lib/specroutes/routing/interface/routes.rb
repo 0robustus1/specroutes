@@ -20,8 +20,8 @@ module Specroutes::Routing
 
       def specified_match(method, *args, &_block)
         spec = RouteSpecification.new(method, args)
-        match(*spec.match_options)
         spec.define_constraints
+        match(*spec.match_options)
         spec.register(specification)
       end
 
