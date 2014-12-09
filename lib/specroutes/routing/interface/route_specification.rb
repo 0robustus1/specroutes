@@ -21,9 +21,9 @@ module Specroutes::Routing
 
       def match_options
         if to
-          [options.merge(via: method).merge(path => to)]
+          [options.merge(via: method).merge(rails_path => to)]
         else
-          [path, options.merge(via: method)]
+          [rails_path, options.merge(via: method)]
         end
       end
 
@@ -36,23 +36,23 @@ module Specroutes::Routing
       end
 
       def define_constraints
-        raise NotImplementedError, 'method define_constraints is not implemented, yet'
+        # raise NotImplementedError, 'method define_constraints is not implemented, yet'
       end
 
       def docs
         docs =
-          if options[:doc].is_a?(Hash)
-            [options[:doc]]
+          if spec_options[:doc].is_a?(Hash)
+            [spec_options[:doc]]
           else
-            Array(options[:doc])
+            Array(spec_options[:doc])
           end
-        docs + Array(options[:docs])
+        docs + Array(spec_options[:docs])
       end
 
       private
       def split_rails_path!
         self.rails_path, query_params = rails_path.split('?')
-        self.query_params = query_params.to_s.split(/;&/)
+        self.query_params = query_params.to_s.split(/[;&]/)
       end
     end
   end
