@@ -1,17 +1,16 @@
 module Specroutes::Routing
   module Interface
     class RouteSpecification
-      attr_accessor :rails_path, :options, :method, :to
+      SPEC_KEYS = %w(doc docs)
+
+      attr_accessor :rails_path, :method, :to
       attr_accessor :query_params
+      attr_accessor :options, :spec_options
 
       def initialize(method, args)
         self.method = method
-        self.options = args.extract_options!
-        if args.any?
-          self.rails_path = args.first
-        else
-          self.rails_path, self.to = options.find { |k, _v| k.is_a?(String) }
-        end
+        self.options = prepare_options!(args.extract_options!)
+        self.rails_path = args.first if args.any?
         split_rails_path!
       end
 
@@ -54,6 +53,26 @@ module Specroutes::Routing
         self.rails_path, query_params = rails_path.split('?')
         self.query_params = query_params.to_s.split(/[;&]/)
       end
+
+      def prepare_options!(options)
+        split!(extract_mapping!(options))
+      end
+
+      def extract_mapping!(options)
+        options.delete_if do |key, value|
+          if key.is_a?(String)
+            self.rails_path, self.to = key, value
+          end
+        end
+      end
+
+      def split!(options)
+        self.spec_options ||= {}
+        options.delete_if do |key, value|
+          spec_options[key] = value if SPEC_KEYS.include?(key.to_s)
+        end
+      end
+
     end
   end
 end
