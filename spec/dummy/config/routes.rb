@@ -13,8 +13,19 @@ Specroutes.define(Dummy::Application.routes) do
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
 
-  resources :products
-  specified_get '/hola/:machine' => 'products#index'
+  specified_get '/products' => 'products#index'
+  specified_get '/products/:id' => 'products#show'
+
+  specified_get '/cars/:id?make=string;model=string' => 'products#show'
+
+  specified_post '/que-tal/:you?from=string' => 'products#index',
+    doc: {
+      lang: 'en',
+      title: 'The question',
+      body: <<-MSG
+The question is a long one.
+      MSG
+    }
 
   # Sample resource route with options:
   #   resources :products do
