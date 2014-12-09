@@ -21,6 +21,11 @@ describe ProductsController do
         expect(get: '/cars/1?make=something&model=other').
           to route_to(controller: 'products', action: 'show', id: '1')
       end
+
+      it 'should not route a get with invalid query-params' do
+        expect(get: '/cars/1?make=something&unknown=other').
+          to_not route_to(controller: 'products', action: 'show', id: '1')
+      end
     end
   end
 end
