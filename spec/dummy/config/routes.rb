@@ -13,6 +13,17 @@ Specroutes.define(Dummy::Application.routes) do
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
 
+  ##
+  # Rebuild specified resources for comments
+  ##
+
+  # uses the string first version instead of only-hash
+  specified_get '/comments', to: 'comments#index'
+  specified_get '/comments/:id' => 'comments#show'
+  specified_post '/comments' => 'comments#create'
+  specified_put '/comments/:id' => 'comments#update'
+  specified_delete '/comments/:id' => 'comments#destroy'
+
   specified_get '/products' => 'products#index'
   specified_get '/products/:id' => 'products#show'
 
