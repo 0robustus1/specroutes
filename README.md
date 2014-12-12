@@ -1,6 +1,7 @@
 # specroutes
 
 [![Build Status](https://travis-ci.org/0robustus1/specroutes.svg?branch=master)](https://travis-ci.org/0robustus1/specroutes)
+[![Coverage Status](https://img.shields.io/coveralls/0robustus1/specroutes.svg)](https://coveralls.io/r/0robustus1/specroutes)
 
 - autogenerate WADL-specification from routes
 - Add mechanism to create routes based on query-string and hierarchical part
