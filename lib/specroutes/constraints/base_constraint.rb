@@ -20,5 +20,16 @@ module Specroutes::Constraints
         acc
       end
     end
+
+    def positional_params(request)
+      query_string = request.original_fullpath.split('?', 2).last.to_s
+      index = 0
+      query_string.split(/[;&]/).reduce({}) do |acc, param|
+        key, value = param.split('=',2)
+        acc.store(key, index) unless value
+        index += 1
+        acc
+      end
+    end
   end
 end
