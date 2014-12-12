@@ -2,6 +2,8 @@ require 'rails_helper'
 
 describe Specroutes::Serializer do
   let(:rails_routes) { ActionDispatch::Routing::RouteSet.new }
+  let(:serialization) { Specroutes.serialize(spec_routes) }
+  let(:parser) { ::XML::Parser.string(serialization).parse }
 
   it 'should return xml as a default serializer' do
     expect(Specroutes::Serializer::DEFAULT).
@@ -19,8 +21,6 @@ describe Specroutes::Serializer do
       end
     end
 
-    let(:serialization) { Specroutes.serialize(spec_routes) }
-    let(:parser) { ::XML::Parser.string(serialization).parse }
     let(:doc_el) { parser.find_first('//doc') }
 
     it 'should contain the title in the result' do
@@ -33,6 +33,46 @@ describe Specroutes::Serializer do
 
     it 'should contain the title in the result' do
       expect(doc_el.child.to_s).to eq(doc_body)
+    end
+  end
+
+  context 'when serializing with a positional and a query-param arg' do
+    let(:query_key) { 'key' }
+    let(:query_value) { 'string' }
+    let(:query_positional) { 'name' }
+    let(:spec_routes) do
+      route = "/simple?#{query_positional};#{query_key}=#{query_value}"
+      Specroutes.define(rails_routes) do
+        specified_get route => 'simple#index'
+      end
+    end
+
+    context 'wrt. the positional query-arg' do
+      let(:query_el) { parser.find_first("//param[@name='#{query_positional}']") }
+
+      it 'should contain the arg' do
+        expect(query_el).to_not be_nil
+      end
+
+      it 'should have "positional" set as style of the param' do
+        expect(query_el.attributes['style']).to eq('positional')
+      end
+    end
+
+    context 'wrt. the query-param arg' do
+      let(:query_el) { parser.find_first("//param[@name='#{query_key}']") }
+
+      it 'should contain the arg' do
+        expect(query_el).to_not be_nil
+      end
+
+      it 'should have the correct type set' do
+        expect(query_el.attributes['type']).to eq("xsd:#{query_value}")
+      end
+
+      it 'should have "query" set as style of the param' do
+        expect(query_el.attributes['style']).to eq('query')
+      end
     end
   end
 end
