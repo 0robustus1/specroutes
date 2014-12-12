@@ -21,10 +21,6 @@ module Specroutes
       resources << route_specification
     end
 
-    def route_specifications
-      @route_specifications ||= []
-    end
-
     def resources
       @resources ||= []
     end
