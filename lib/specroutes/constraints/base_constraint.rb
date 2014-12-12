@@ -15,7 +15,8 @@ module Specroutes::Constraints
     def query_params(request)
       query_string = request.original_fullpath.split('?', 2).last.to_s
       query_string.split(/[;&]/).reduce({}) do |acc, param|
-        acc.store(*param.split('=',2))
+        key, value = param.split('=',2)
+        acc.store(key, value) if value
         acc
       end
     end
