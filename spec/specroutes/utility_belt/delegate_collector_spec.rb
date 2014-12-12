@@ -64,6 +64,49 @@ describe Specroutes::UtilityBelt::DelegateCollector do
     end
   end
 
+  context 'in referrals:' do
+    let(:klass) do
+      class HookClass
+        include Specroutes::UtilityBelt::DelegateCollector::InstanceMethods
+        extend Specroutes::UtilityBelt::DelegateCollector::ClassMethods
+
+        hooked_refer_to :hooked
+        refer_to :unhooked
+      end
+      HookClass
+    end
+    let(:instance) { klass.new }
+
+    context '.hooked_refer_to' do
+      let(:hooked_result) { {method: :hooked, hooks: true,
+                             args: [], block: nil} }
+
+      it 'should define a method' do
+        expect(klass.method_defined?(:hooked)).to be_truthy
+      end
+
+      it 'when called it should append the right call to methods' do
+        instance.hooked
+        expect(instance.methods).to include(hooked_result)
+      end
+    end
+
+    context '.refer_to' do
+      let(:unhooked_result) { {method: :unhooked, hooks: false,
+                               args: [], block: nil} }
+
+      it 'should define a method' do
+        expect(klass.method_defined?(:unhooked)).to be_truthy
+      end
+
+      it 'when called it should append the right call to methods' do
+        instance.unhooked
+        expect(instance.methods).to include(unhooked_result)
+      end
+
+    end
+  end
+
   context 'Helper.method_name' do
     let(:helper) { Specroutes::UtilityBelt::DelegateCollector::Helper }
     let(:a_proc) { proc { |bar| "foo#{bar}" } }
