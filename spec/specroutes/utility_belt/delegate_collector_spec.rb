@@ -63,4 +63,17 @@ describe Specroutes::UtilityBelt::DelegateCollector do
         to be(klass.default_delegate_after)
     end
   end
+
+  context 'Helper.method_name' do
+    let(:helper) { Specroutes::UtilityBelt::DelegateCollector::Helper }
+    let(:a_proc) { proc { |bar| "foo#{bar}" } }
+
+    it 'should return explicit when provided' do
+      expect(helper.method_name('foo', 'bar', nil)).to eq('foo')
+    end
+
+    it 'should call the proc with method otherwise' do
+      expect(helper.method_name(nil, 'bar', a_proc)).to eq('foobar')
+    end
+  end
 end
