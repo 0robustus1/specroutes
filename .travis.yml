@@ -5,4 +5,4 @@ rvm:
 before_script:
   - cd spec/dummy && bundle exec rake db:migrate
 script:
-  - bundle exec rake
+  - COVERALLS=true bundle exec rake
