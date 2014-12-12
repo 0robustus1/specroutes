@@ -25,4 +25,47 @@ describe Specroutes::Constraints::BaseConstraint do
       expect(params).to include(key: 'value')
     end
   end
+
+  let(:uri) { '/simple?positional;key=value;other_positional;id=1' }
+  let(:request) { double('request', original_fullpath: uri) }
+
+  context '#query_params' do
+    let(:query_params) { constraint.send(:query_params, request) }
+
+    it 'should not contain "positional"' do
+      expect(query_params.keys).to_not include('positional')
+    end
+
+    it 'should contain the key => value mapping' do
+      expect(query_params).to include('key' => 'value')
+    end
+
+    it 'should not contain "other_positional"' do
+      expect(query_params.keys).to_not include('other_positional')
+    end
+
+    it 'should contain the id => 1 mapping' do
+      expect(query_params).to include('id' => '1')
+    end
+  end
+
+  context '#positional_params' do
+    let(:positional_params) { constraint.send(:positional_params, request) }
+
+    it 'should contain "positional" as a to-index mapping' do
+      expect(positional_params).to include('positional' => 0)
+    end
+
+    it 'should not contain "key" as a key' do
+      expect(positional_params.keys).to_not include('key')
+    end
+
+    it 'should contain "other_positional" as a to-index mapping' do
+      expect(positional_params).to include('other_positional' => 2)
+    end
+
+    it 'should not contain "id" as a key' do
+      expect(positional_params.keys).to_not include('id')
+    end
+  end
 end
