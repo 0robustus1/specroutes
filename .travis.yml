@@ -1,5 +1,6 @@
 language: ruby
-cache: bundler
+cache:
+  bundler: true
 rvm:
   - 2.1.5
 before_script:
