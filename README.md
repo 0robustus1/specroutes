@@ -20,6 +20,10 @@ Specroutes.define(Dummy::Application.routes) do
 end
 ```
 
+Alternatively you can just run the generator provided by the gem:
+
+- `rails generate specroutes:routes`
+
 ## Usage
 
 After changing the initial routes call you are still able to call any normal
