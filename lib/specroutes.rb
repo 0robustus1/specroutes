@@ -10,6 +10,7 @@ module Specroutes
   end
 end
 
+require 'specroutes/railtie'
 require 'specroutes/utility_belt'
 require 'specroutes/serializer'
 require 'specroutes/specification'
