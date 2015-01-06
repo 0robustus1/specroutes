@@ -19,6 +19,7 @@ describe Specroutes::Routing::Interface::RouteSpecification do
 
       context 'and the grouped constraint' do
         let(:group) { specification.match_options.last[:constraints] }
+        let(:param_constraint) { Specroutes::Constraints::QueryParamConstraint.new(['constraint']) }
 
         it 'should contain two constraints' do
           expect(group.constraints.length).to eq(2)
@@ -26,6 +27,10 @@ describe Specroutes::Routing::Interface::RouteSpecification do
 
         it 'should contain the defined constraint' do
           expect(group.constraints).to include(constraint)
+        end
+
+        it 'should contain the param-constraint' do
+          expect(group.constraints).to include(param_constraint)
         end
       end
 

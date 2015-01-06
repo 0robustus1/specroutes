@@ -2,6 +2,8 @@ module Specroutes::Constraints
   class BaseConstraint
     PATH_PARAMS_KEY = "action_dispatch.request.path_parameters"
 
+    include Specroutes::UtilityBelt::StateBasedEquality
+
     def matches?(_request)
       true
     end
