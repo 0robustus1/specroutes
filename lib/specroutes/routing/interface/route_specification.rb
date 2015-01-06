@@ -38,7 +38,7 @@ module Specroutes::Routing
         if query_params.present?
           allowed = query_params.map { |p| p.split('=', 2).first }
           constraint_klass = Specroutes::Constraints::QueryParamConstraint
-          self.options[:constraints] = constraint_klass.new(allowed)
+          add_to_constraints!(constraint_klass.new(allowed))
         end
       end
 
@@ -53,6 +53,21 @@ module Specroutes::Routing
       end
 
       private
+      def add_to_constraints!(constraint)
+        constraints = maybe_group(options[:constraints])
+        if constraints
+          constraints << constraint
+        else
+          constraints = constraint
+        end
+        options[:constraints] = constraints
+      end
+
+      def maybe_group(constraint)
+        constraint && Specroutes::Constraints::GroupedConstraint.
+          from(constraint)
+      end
+
       def split_rails_path!
         self.rails_path, query_params = rails_path.split('?')
         self.query_params = query_params.to_s.split(/[;&]/)
