@@ -42,6 +42,17 @@ module Specroutes::Routing
         end
       end
 
+      def docs
+        docs =
+          if spec_options[:doc].is_a?(Hash)
+            [spec_options[:doc]]
+          else
+            Array(spec_options[:doc])
+          end
+        docs + Array(spec_options[:docs])
+      end
+
+      private
       def add_to_constraints!(constraint)
         constraints = maybe_group(options[:constraints])
         if constraints
@@ -57,17 +68,6 @@ module Specroutes::Routing
           from(constraint)
       end
 
-      def docs
-        docs =
-          if spec_options[:doc].is_a?(Hash)
-            [spec_options[:doc]]
-          else
-            Array(spec_options[:doc])
-          end
-        docs + Array(spec_options[:docs])
-      end
-
-      private
       def split_rails_path!
         self.rails_path, query_params = rails_path.split('?')
         self.query_params = query_params.to_s.split(/[;&]/)
