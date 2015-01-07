@@ -23,7 +23,14 @@ module Specroutes::Serializer
       doc = ::XML::Document.new
       define_application(doc) do |app|
         define_resources(app, base: '/') do |resources_el|
-          specification.resources.each { |r| define_resource!(resources_el, r) }
+          resource_stack = [resources_el]
+          current_depth = 0
+          specification.resource_tree.each_node do |node|
+            depth_diff = current_depth - node.depth
+            depth_diff.times { resource_stack.pop } if depth_diff >= 0
+            resource_stack.push(define_resource!(resource_stack.last, node))
+            current_depth = node.depth
+          end
         end
       end
       doc.to_s
@@ -42,12 +49,11 @@ module Specroutes::Serializer
       yield resources_el if block_given?
     end
 
-    def define_resource!(resources_el, resource)
+    def define_resource!(parent_el, node)
       resource_el = ::XML::Node.new('resource')
-      resource_el['path'] = resource.path
-      define_docs!(resource_el, resource)
-      define_method!(resource_el, resource)
-      resources_el << resource_el
+      resource_el['path'] = node.path_portion
+      node.payload.each { |r| define_method!(resource_el, r) }
+      parent_el << resource_el
       resource_el
     end
 
@@ -69,6 +75,7 @@ module Specroutes::Serializer
       method_el['name'] = resource.method
       method_el['id'] = resource.identifier
       define_params!(method_el, resource)
+      define_docs!(method_el, resource)
       resource_el << method_el
       method_el
     end

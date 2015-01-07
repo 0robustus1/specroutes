@@ -36,6 +36,14 @@ module Specroutes
       @path = "#{parent && parent.path}#{path_portion}"
     end
 
+    def depth
+      @depth or depth!
+    end
+
+    def depth!
+      @depth = parent ? parent.depth + 1 : 0
+    end
+
     def branch!(resource_path, resource)
       if resource_path.start_with?(path)
         portions = resource_path.sub(path, '').split(WITHOUT_LAST_SLASH_RE)
@@ -57,6 +65,13 @@ module Specroutes
     def child_for!(portion, node)
       child = children.find { |c| c.path_portion == portion }
       child or ResourceTree.new(portion, node)
+    end
+
+    def each_node(&block)
+      if block_given?
+        block.call(self)
+        children.each { |c| c.each_node(&block) }
+      end
     end
   end
 end
