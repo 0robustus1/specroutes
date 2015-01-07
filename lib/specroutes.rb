@@ -13,6 +13,7 @@ end
 require 'specroutes/railtie'
 require 'specroutes/utility_belt'
 require 'specroutes/serializer'
+require 'specroutes/resource_tree'
 require 'specroutes/specification'
 require 'specroutes/constraints'
 require 'specroutes/routing'
