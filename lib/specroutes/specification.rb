@@ -21,6 +21,10 @@ module Specroutes
       resources << route_specification
     end
 
+    def resource_tree
+      @resource_tree ||= ResourceTree.from_resource_list(resources)
+    end
+
     def resources
       @resources ||= []
     end

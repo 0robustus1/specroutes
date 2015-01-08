@@ -31,7 +31,7 @@ module Specroutes::Routing
       end
 
       def identifier
-        rails_path
+        ":#{method.upcase}:#{rails_path}"
       end
 
       def define_constraints
