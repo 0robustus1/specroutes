@@ -15,6 +15,7 @@ module Specroutes::Routing
     hooked_refer_to :delete
     refer_to :resources
     refer_to :resource
+    refer_to :namespace
     refer_to :match
 
 
