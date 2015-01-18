@@ -18,6 +18,8 @@ module Specroutes::Routing
     refer_to :namespace
     refer_to :match
     refer_to :root
+    refer_to :collection
+    refer_to :member
 
 
     def execute_methods
