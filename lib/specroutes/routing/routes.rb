@@ -17,6 +17,7 @@ module Specroutes::Routing
     refer_to :resource
     refer_to :namespace
     refer_to :match
+    refer_to :root
 
 
     def execute_methods
