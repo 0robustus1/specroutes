@@ -27,7 +27,7 @@ module Specroutes::Routing
       end
 
       def path
-        rails_path.gsub(/:([^\/]+)/, '{\1}')
+        rails_path.gsub(/[:*]([^\/]+)/, '{\1}')
       end
 
       def identifier
