@@ -39,6 +39,8 @@ module Specroutes::Routing
           allowed = query_params.map { |p| p.split('=', 2).first }
           constraint_klass = Specroutes::Constraints::QueryParamConstraint
           add_to_constraints!(constraint_klass.new(allowed))
+        else
+          options[:constraints] = maybe_group(options[:constraints])
         end
       end
 
