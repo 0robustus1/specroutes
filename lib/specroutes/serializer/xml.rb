@@ -26,7 +26,7 @@ module Specroutes::Serializer
           resource_stack = [resources_el]
           current_depth = 0
           specification.resource_tree.each_node do |node|
-            depth_diff = current_depth - node.depth
+            depth_diff = current_depth - (node.depth - 1)
             depth_diff.times { resource_stack.pop } if depth_diff >= 0
             resource_stack.push(define_resource!(resource_stack.last, node))
             current_depth = node.depth

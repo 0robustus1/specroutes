@@ -69,7 +69,7 @@ module Specroutes
 
     def each_node(&block)
       if block_given?
-        block.call(self)
+        block.call(self) if parent
         children.each { |c| c.each_node(&block) }
       end
     end
