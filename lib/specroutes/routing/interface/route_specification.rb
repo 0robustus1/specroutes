@@ -36,9 +36,14 @@ module Specroutes::Routing
 
       def define_constraints
         if query_params.present?
-          allowed = query_params.map { |p| p.split('=', 2).first }
-          constraint_klass = Specroutes::Constraints::QueryParamConstraint
-          add_to_constraints!(constraint_klass.new(allowed))
+          qp_klass = Specroutes::Constraints::QueryParamConstraint
+          if key_val_params.present?
+            add_to_constraints!(qp_klass.new(key_val_params))
+          end
+          pp_klass = Specroutes::Constraints::PositionalParamConstraint
+          if positional_params.present?
+            add_to_constraints!(pp_klass.new(positional_params))
+          end
         else
           options[:constraints] = maybe_group(options[:constraints])
         end
@@ -55,6 +60,25 @@ module Specroutes::Routing
       end
 
       private
+      def key_val_params
+        params = []
+        query_params.present? and query_params.map do |param|
+          key, val = param.split('=', 2)
+          params << key if val
+        end
+        params
+      end
+
+      def positional_params
+        pos = 0
+        query_params.present? and query_params.reduce({}) do |h, param|
+          key, val = param.split('=', 2)
+          h[key] = pos unless val
+          pos += 1
+          h
+        end
+      end
+
       def add_to_constraints!(constraint)
         constraints = maybe_group(options[:constraints])
         if constraints
