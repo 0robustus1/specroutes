@@ -73,7 +73,6 @@ module Specroutes::Serializer
     def define_method!(resource_el, resource)
       method_el = ::XML::Node.new('method')
       method_el['name'] = resource.method
-      method_el['id'] = resource.identifier
       define_params!(method_el, resource)
       define_docs!(method_el, resource)
       resource_el << method_el
