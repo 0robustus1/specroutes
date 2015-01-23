@@ -47,7 +47,7 @@ module Specroutes
     def branch!(resource_path, resource)
       if resource_path.start_with?(path)
         portions = resource_path.sub(path, '').split(WITHOUT_LAST_SLASH_RE)
-        node = portions.reduce(self) { |n, p| child_for!(p, n) }
+        node = portions.reduce(self) { |n, p| n.child_for!(p, n) }
         node.payload << resource
       else
         branch_from_parent!(resource_path, resource)
