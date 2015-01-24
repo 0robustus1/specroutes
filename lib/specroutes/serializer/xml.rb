@@ -4,6 +4,11 @@ module Specroutes::Serializer
   class XML
     attr_accessor :specification
 
+    NS_XSD = 'http://www.w3.org/2001/XMLSchema'
+    NS_XSI = 'http://www.w3.org/2001/XMLSchema-instance'
+    NS_WADL = 'http://wadl.dev.java.net/2009/02'
+    NS_WADL_LOCATION = 'http://www.w3.org/Submission/wadl/wadl.xsd'
+
     DATATYPE_MAPPING = {
       string: 'xsd:string',
       boolean: 'xsd:boolean',
@@ -38,6 +43,10 @@ module Specroutes::Serializer
 
     def define_application(document)
       application_el = ::XML::Node.new('application')
+      application_el['xmlns:xsd'] = NS_XSD
+      application_el['xmlns:xsi'] = NS_XSI
+      application_el['xsi:schemaLocation'] = "#{NS_WADL} #{NS_WADL_LOCATION}"
+      application_el['xmlns'] = NS_WADL
       document.root = application_el
       yield application_el if block_given?
     end
