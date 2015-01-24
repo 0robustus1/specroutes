@@ -11,6 +11,10 @@ describe Specroutes::Serializer do
   end
 
   context 'when serializing a doc-route' do
+    before do
+      parser.root.namespaces.default_prefix = 'wadl'
+    end
+
     let(:doc_title) { 'The simple route' }
     let(:doc_lang) { 'en' }
     let(:doc_body) { 'This is the body for the simple route.' }
@@ -21,7 +25,7 @@ describe Specroutes::Serializer do
       end
     end
 
-    let(:doc_el) { parser.find_first('//doc') }
+    let(:doc_el) { parser.find_first('//wadl:doc') }
 
     it 'should contain the title in the result' do
       expect(doc_el.attributes['title']).to eq(doc_title)
@@ -37,6 +41,10 @@ describe Specroutes::Serializer do
   end
 
   context 'when serializing with a positional and a query-param arg' do
+    before do
+      parser.root.namespaces.default_prefix = 'wadl'
+    end
+
     let(:query_key) { 'key' }
     let(:query_value) { 'string' }
     let(:query_positional) { 'name' }
@@ -48,7 +56,7 @@ describe Specroutes::Serializer do
     end
 
     context 'wrt. the positional query-arg' do
-      let(:query_el) { parser.find_first("//param[@name='#{query_positional}']") }
+      let(:query_el) { parser.find_first("//wadl:param[@name='#{query_positional}']") }
 
       it 'should contain the arg' do
         expect(query_el).to_not be_nil
@@ -60,7 +68,7 @@ describe Specroutes::Serializer do
     end
 
     context 'wrt. the query-param arg' do
-      let(:query_el) { parser.find_first("//param[@name='#{query_key}']") }
+      let(:query_el) { parser.find_first("//wadl:param[@name='#{query_key}']") }
 
       it 'should contain the arg' do
         expect(query_el).to_not be_nil
