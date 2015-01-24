@@ -56,7 +56,7 @@ describe Specroutes::Serializer do
     end
 
     context 'wrt. the positional query-arg' do
-      let(:query_el) { parser.find_first("//wadl:param[@name='#{query_positional}']") }
+      let(:query_el) { parser.find_first("//wadl-ext:param[@name='#{query_positional}']") }
 
       it 'should contain the arg' do
         expect(query_el).to_not be_nil

@@ -8,6 +8,7 @@ module Specroutes::Serializer
     NS_XSI = 'http://www.w3.org/2001/XMLSchema-instance'
     NS_WADL = 'http://wadl.dev.java.net/2009/02'
     NS_WADL_LOCATION = 'http://www.w3.org/Submission/wadl/wadl.xsd'
+    NS_WADL_EXT = 'http://masterthesis.rightsrestricted.com/wadl/wadl-ext'
 
     DATATYPE_MAPPING = {
       string: 'xsd:string',
@@ -47,6 +48,7 @@ module Specroutes::Serializer
       application_el['xmlns:xsi'] = NS_XSI
       application_el['xsi:schemaLocation'] = "#{NS_WADL} #{NS_WADL_LOCATION}"
       application_el['xmlns'] = NS_WADL
+      application_el['xmlns:wadl-ext'] = NS_WADL_EXT
       document.root = application_el
       yield application_el if block_given?
     end
@@ -100,15 +102,19 @@ module Specroutes::Serializer
 
     def define_param!(method_el, query_param, resource)
       param, value = query_param.split('=')
-      param_el = ::XML::Node.new('param')
+      param_el =
+        if value
+          el = ::XML::Node.new('param')
+          el['style'] = 'query'
+          el['type'] = typefy_to_xsd(value)
+          el
+        else
+          el = ::XML::Node.new('wadl-ext:param')
+          el['style'] = 'positional'
+          el['position'] = resource.positional_params[param].to_s
+          el
+        end
       param_el['name'] = param
-      if value
-        param_el['style'] = 'query'
-        param_el['type'] = typefy_to_xsd(value)
-      else
-        param_el['style'] = 'positional'
-        param_el['position'] = resource.positional_params[param].to_s
-      end
       method_el << param_el
     end
 
