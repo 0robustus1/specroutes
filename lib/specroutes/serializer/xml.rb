@@ -82,12 +82,14 @@ module Specroutes::Serializer
     def define_params!(method_el, resource)
       if resource.query_params.any?
         define_request!(method_el) do |request_el|
-          resource.query_params.each { |q| define_param!(request_el, q) }
+          resource.query_params.each do |query_param|
+            define_param!(request_el, query_param, resource)
+          end
         end
       end
     end
 
-    def define_param!(method_el, query_param)
+    def define_param!(method_el, query_param, resource)
       param, value = query_param.split('=')
       param_el = ::XML::Node.new('param')
       param_el['name'] = param
@@ -96,6 +98,7 @@ module Specroutes::Serializer
         param_el['type'] = typefy_to_xsd(value)
       else
         param_el['style'] = 'positional'
+        param_el['position'] = resource.positional_params[param].to_s
       end
       method_el << param_el
     end

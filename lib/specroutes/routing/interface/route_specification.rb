@@ -59,7 +59,6 @@ module Specroutes::Routing
         docs + Array(spec_options[:docs])
       end
 
-      private
       def key_val_params
         params = []
         query_params.present? and query_params.map do |param|
@@ -79,6 +78,7 @@ module Specroutes::Routing
         end
       end
 
+      private
       def add_to_constraints!(constraint)
         constraints = maybe_group(options[:constraints])
         if constraints
