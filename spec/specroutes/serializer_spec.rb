@@ -65,6 +65,10 @@ describe Specroutes::Serializer do
       it 'should have "positional" set as style of the param' do
         expect(query_el.attributes['style']).to eq('positional')
       end
+
+      it 'should have the "position" attribute set correctly' do
+        expect(query_el.attributes['position']).to eq('0')
+      end
     end
 
     context 'wrt. the query-param arg' do
