@@ -84,6 +84,7 @@ module Specroutes::Serializer
       method_el['name'] = resource.method
       define_params!(method_el, resource)
       define_docs!(method_el, resource)
+      define_responses!(method_el, resource)
       resource_el << method_el
       method_el
     end
@@ -116,6 +117,31 @@ module Specroutes::Serializer
       request_el = ::XML::Node.new('request')
       yield request_el
       method_el << request_el
+    end
+
+    def define_responses!(method_el, resource)
+      if resource.meta.accepts.any?
+        resource.meta.status_codes.each do |status_code|
+          define_response!(method_el, status_code, resource)
+        end
+      end
+    end
+
+    def define_response!(method_el, status_code, resource)
+      response_el = ::XML::Node.new('response')
+      response_el['status'] = status_code
+      resource.meta.accepts.each do |mime_type|
+        define_representation!(response_el, mime_type)
+      end
+      method_el << response_el
+      response_el
+    end
+
+    def define_representation!(response_el, mime_type)
+      representation_el = ::XML::Node.new('representation')
+      representation_el['mediaType'] = mime_type
+      response_el << representation_el
+      representation_el
     end
 
     def typefy_to_xsd(value)

@@ -32,6 +32,10 @@ module Specroutes::Routing
       def docs
         @docs ||= {}
       end
+
+      def status_codes
+        %w(200)
+      end
     end
   end
 end
