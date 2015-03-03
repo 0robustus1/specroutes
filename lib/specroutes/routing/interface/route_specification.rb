@@ -6,12 +6,14 @@ module Specroutes::Routing
       attr_accessor :rails_path, :method, :to
       attr_accessor :query_params
       attr_accessor :options, :spec_options
+      attr_accessor :meta
 
-      def initialize(method, args)
+      def initialize(method, args, &block)
         self.method = method
         self.options = prepare_options!(args.extract_options!)
         self.rails_path = args.first if args.any?
         split_rails_path!
+        self.meta = MetaDataDSL.new(self, &block)
       end
 
       def register(specification)
@@ -47,6 +49,14 @@ module Specroutes::Routing
         else
           options[:constraints] = maybe_group(options[:constraints])
         end
+        add_possible_mime_constraints!
+      end
+
+      def add_possible_mime_constraints!
+        if meta.mime_constraints.any?
+          mt_klass = Specroutes::Constraints::MimeTypeConstraint
+          add_to_constraints!(mt_klass.new(*meta.mime_constraints))
+        end
       end
 
       def docs
@@ -56,7 +66,7 @@ module Specroutes::Routing
           else
             Array(spec_options[:doc])
           end
-        docs + Array(spec_options[:docs])
+        docs + Array(spec_options[:docs]) + meta.docs.values
       end
 
       def key_val_params

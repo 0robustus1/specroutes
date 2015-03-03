@@ -18,10 +18,10 @@ module Specroutes::Routing
         specified_match('delete', *args, &block)
       end
 
-      def specified_match(method, *args, &_block)
-        spec = RouteSpecification.new(method, args)
+      def specified_match(method, *args, &block)
+        spec = RouteSpecification.new(method, args, &block)
         spec.define_constraints
-        match(*spec.match_options)
+        match(*spec.match_options, &spec.meta.match_block)
         spec.register(specification)
       end
 
