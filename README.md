@@ -76,6 +76,17 @@ specroutes to create constraints by itself), you can only use the
 Object#matches? way of providing constraints. Regex-based constraints are not
 supported, yet (but they will be soon).
 
+Additional metadata can be provided inside the block of a `specified_*` call.
+Currently there are three methods supported:
+
+- `accept(mime_type, constraint: false)`, adds a possible *representation* for
+  the mime-type.  If the constraint-value is set to true it will add a
+  MimeTypeConstraint to the route, such that the route will only match if the
+  request contains the mime_type as it's primary header. Multiple accept-calls
+  with constraint set to true will act like a logical *or*.
+- `doc(lang: 'en', title:, body: '')` another way to specify documentation for a route.
+- `match_block(&block`, a block passed to the internal `match`-call.
+
 ### Specification generation
 
 Specroutes produces an internal representation of the specified routes and

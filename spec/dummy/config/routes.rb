@@ -38,6 +38,14 @@ The question is a long one.
       MSG
     }
 
+  specified_put '/que-tal/:you?from=string' => 'products#index' do
+    accept 'application/json'
+    accept 'text/html', constraint: true
+    doc title: 'The question', body: <<-MSG
+The question is a long one.
+      MSG
+  end
+
   # Sample resource route with options:
   #   resources :products do
   #     member do
