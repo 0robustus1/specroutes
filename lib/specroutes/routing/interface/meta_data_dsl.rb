@@ -22,7 +22,7 @@ module Specroutes::Routing
       end
 
       def accepts
-        @accepts ||= []
+        @accepts ||= Set.new
       end
 
       def mime_constraints
