@@ -21,7 +21,9 @@ module Specroutes::Routing
       def specified_match(method, *args, &block)
         spec = RouteSpecification.new(method, args, &block)
         spec.define_constraints
-        match(*spec.match_options, &spec.meta.match_block)
+        spec.on_match_calls do |match_options, match_block|
+          match(*match_options, &match_block)
+        end
         spec.register(specification)
       end
 

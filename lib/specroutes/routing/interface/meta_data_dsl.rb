@@ -13,6 +13,21 @@ module Specroutes::Routing
         mime_constraints << mime_type if constraint
       end
 
+      def reroute_on_mime(mime, to:)
+        accept(mime)
+        klass = Specroutes::Constraints::MimeTypeConstraint
+        reroute(to, klass.new(mime))
+      end
+
+      def reroute_on_header(header:, value:, to:)
+        klass = Specroutes::Constraints::HeaderConstraint
+        reroute(to, klass.new(header, value))
+      end
+
+      def reroute(target, constraint)
+        reroutes << {target: target, constraint: constraint}
+      end
+
       def doc(lang: 'en', title:, body: '')
         docs[lang] = {lang: lang, title: title, body: body}
       end
@@ -27,6 +42,10 @@ module Specroutes::Routing
 
       def mime_constraints
         @mime_constraints ||= []
+      end
+
+      def reroutes
+        @reroutes ||= []
       end
 
       def docs
