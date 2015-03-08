@@ -14,6 +14,11 @@ module Specroutes::Constraints
       constraints << constraint if constraint
     end
 
+    def prepend!(constraint)
+      @constraints = [constraint] + constraints if constraint
+      self
+    end
+
     def matches?(request)
       constraints.all? { |c| c.matches?(request) }
     end

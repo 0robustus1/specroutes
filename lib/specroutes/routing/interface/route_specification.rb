@@ -20,11 +20,38 @@ module Specroutes::Routing
         specification.register(self)
       end
 
+      def on_match_calls(&block)
+        meta.reroutes.each do |reroute|
+          opts = altered_match_options(reroute[:target],
+                                       reroute[:constraint])
+          block.call(opts, meta.match_block)
+        end
+        block.call(match_options, meta.match_block)
+      end
+
       def match_options
         if to
           [options.merge(via: method).merge(rails_path => to)]
         else
           [rails_path, options.merge(via: method)]
+        end
+      end
+
+      def altered_match_options(target, constraint)
+        opts = options.merge(via: method, rails_path => target)
+        opts.delete(:controller)
+        opts.delete(:action)
+        opts.delete(:to)
+        opts[:constraints] = altered_constraints(constraint)
+        [opts]
+      end
+
+      def altered_constraints(constraint)
+        group = maybe_group(options[:constraints])
+        if group
+          group.dup.prepend!(constraint)
+        else
+          constraint
         end
       end
 
