@@ -8,9 +8,9 @@ module Specroutes::Routing
         instance_eval(&block) if block
       end
 
-      def accept(mime_type, constraint: false)
+      def accept(mime_type, constraint: false, accept_allstar: false)
         accepts << mime_type
-        mime_constraints << mime_type if constraint
+        mime_constraints << [mime_type, accept_allstar] if constraint
       end
 
       def reroute_on_mime(mime, to:)

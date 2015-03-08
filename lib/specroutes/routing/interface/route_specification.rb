@@ -81,9 +81,16 @@ module Specroutes::Routing
 
       def add_possible_mime_constraints!
         if meta.mime_constraints.any?
-          mt_klass = Specroutes::Constraints::MimeTypeConstraint
-          add_to_constraints!(mt_klass.new(*meta.mime_constraints))
+          group = meta.mime_constraints.group_by { |(_mime, allstar)| allstar }
+          add_possible_mime_constraints_from_group!(group, false)
+          add_possible_mime_constraints_from_group!(group, true)
         end
+      end
+
+      def add_possible_mime_constraints_from_group!(group, allstar)
+        mimes = group[allstar].map { |el| el.first }
+        mt_klass = Specroutes::Constraints::MimeTypeConstraint
+        add_to_constraints!(mt_klass.new(*mimes, accept_allstar: allstar))
       end
 
       def docs
