@@ -1,6 +1,13 @@
 module Specroutes::Routing
   module Interface
     module Routes
+      def specified_resource_part(path)
+        resource_part = ResourcePart.new(path)
+        @resource_part_stack ||= []
+        @resource_part_stack.push(resource_part)
+        yield(resource_part)
+        @resource_part_stack.pop
+      end
 
       def specified_get(*args, &block)
         specified_match('get', *args, &block)
@@ -19,7 +26,8 @@ module Specroutes::Routing
       end
 
       def specified_match(method, *args, &block)
-        spec = RouteSpecification.new(method, args, &block)
+        current_stack = @resource_part_stack.dup
+        spec = RouteSpecification.new(method, args, current_stack, &block)
         spec.define_constraints
         spec.on_match_calls do |match_options, match_block|
           match(*match_options, &match_block)

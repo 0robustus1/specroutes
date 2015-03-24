@@ -7,8 +7,10 @@ module Specroutes::Routing
       attr_accessor :query_params
       attr_accessor :options, :spec_options
       attr_accessor :meta
+      attr_accessor :resource_part_stack
 
-      def initialize(method, args, &block)
+      def initialize(method, args, resource_part_stack, &block)
+        self.resource_part_stack = resource_part_stack
         self.method = method
         self.options = prepare_options!(args.extract_options!)
         self.rails_path = args.first if args.any?
@@ -31,14 +33,14 @@ module Specroutes::Routing
 
       def match_options
         if to
-          [options.merge(via: method).merge(rails_path => to)]
+          [options.merge(via: method).merge(namespaced_rails_path => to)]
         else
-          [rails_path, options.merge(via: method)]
+          [namespaced_rails_path, options.merge(via: method)]
         end
       end
 
       def altered_match_options(target, constraint)
-        opts = options.merge(via: method, rails_path => target)
+        opts = options.merge(via: method, namespaced_rails_path => target)
         opts.delete(:controller)
         opts.delete(:action)
         opts.delete(:to)
@@ -56,11 +58,17 @@ module Specroutes::Routing
       end
 
       def path
-        rails_path.gsub(/[:*]([^\/]+)/, '{\1}')
+        namespaced_rails_path.gsub(/[:*]([^\/]+)/, '{\1}')
+      end
+
+      def namespaced_rails_path
+        return @namespaced_rails_path if @namespaced_rails_path
+        prefix = resource_part_stack.map { |r| r.path }.join('')
+        @namespaced_rails_path = "#{prefix}#{rails_path}"
       end
 
       def identifier
-        ":#{method.upcase}:#{rails_path}"
+        ":#{method.upcase}:#{namespaced_rails_path}"
       end
 
       def define_constraints
