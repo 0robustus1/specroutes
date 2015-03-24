@@ -87,6 +87,19 @@ Currently there are three methods supported:
 - `doc(lang: 'en', title:, body: '')` another way to specify documentation for a route.
 - `match_block(&block`, a block passed to the internal `match`-call.
 
+#### Common Parts
+
+Sometimes routes have a prefix in common, e.g. `/json-api/` for `/json-api/comments` and `/json-api/models`.
+Such routes can be grouped together by providing a resource-part as namespace.
+The following example illustrates this.
+
+```ruby
+specified_resource_part '/json-api' do
+  specified_get '/comments' => 'comments#index'
+  specified_get '/models' => 'models#index'
+end
+```
+
 ### Specification generation
 
 Specroutes produces an internal representation of the specified routes and

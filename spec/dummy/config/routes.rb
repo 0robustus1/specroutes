@@ -18,6 +18,10 @@ Specroutes.define(Dummy::Application.routes) do
   ##
 
   # uses the string first version instead of only-hash
+  specified_resource_part '/foo-lala' do
+    specified_get '/foo-comments', to: 'comments#index'
+  end
+
   specified_get '/comments', to: 'comments#index'
   specified_get '/comments/:id' => 'comments#show'
   specified_post '/comments' => 'comments#create'
