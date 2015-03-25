@@ -18,8 +18,23 @@ Specroutes.define(Dummy::Application.routes) do
   ##
 
   # uses the string first version instead of only-hash
-  specified_resource_part '/foo-lala' do
-    specified_get '/foo-comments', to: 'comments#index'
+  specified_resource_part '/admin' do |part|
+    part.doc title: 'the admin namespace'
+
+    specified_get '/internal-comments', to: 'comments#index' do
+      doc title: 'internal comments', body: 'comments on internal admin-structures'
+    end
+
+    specified_resource_part '/internal/subjects' do |part|
+      part.doc title: 'Subjects of internal investigation',
+        body: 'Pertains to subjects of internal investigations'
+      specified_get '/comments', to: 'comments#index' do
+        doc title: 'subject-comments',
+          body: 'Comments on the subjects of internal investigations'
+        doc lang: 'de', title: 'Zielpersonen-Kommentare',
+          body: 'Kommentare ueber Zielpersonen interner Untersuchungen'
+      end
+    end
   end
 
   specified_get '/comments', to: 'comments#index'
