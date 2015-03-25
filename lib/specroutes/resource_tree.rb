@@ -46,11 +46,24 @@ module Specroutes
 
     def branch!(resource_path, resource)
       if resource_path.start_with?(path)
-        portions = resource_path.sub(path, '').split(WITHOUT_LAST_SLASH_RE)
-        node = portions.reduce(self) { |n, p| n.child_for!(p, n) }
+        reduced_path = resource_path.sub(path, '')
+        portions_with_meta = metafied_portions(reduced_path, resource)
+        node = portions_with_meta.reduce(self) { |n, p| n.child_for!(p, n) }
         node.payload << resource
       else
         branch_from_parent!(resource_path, resource)
+      end
+    end
+
+    def metafied_portions(reduced_path, resource)
+      if resource.resource_part_stack.any?
+        part_path = resource.resource_part_stack.map { |p| p.path }.join
+        part_path = part_path.sub(path, '')
+        id_path = reduced_path.sub("#{part_path}/", '').
+          split(WITHOUT_LAST_SLASH_RE)
+        resource.resource_part_stack.map { |p| p.clean_path } + id_path
+      else
+        reduced_path.split(WITHOUT_LAST_SLASH_RE)
       end
     end
 
