@@ -61,9 +61,14 @@ module Specroutes::Serializer
     def define_resource!(parent_el, node)
       resource_el = ::XML::Node.new('resource')
       resource_el['path'] = node.path_portion
+      node.meta_data.each { |m| define_meta!(resource_el, m) }
       node.payload.each { |r| define_method!(resource_el, r) }
       parent_el << resource_el
       resource_el
+    end
+
+    def define_meta!(resource_el, m)
+      define_doc!(resource_el, **m)
     end
 
     def define_docs!(resource_el, resource)

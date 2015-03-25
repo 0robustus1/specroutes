@@ -5,7 +5,7 @@ module Specroutes
 
     WITHOUT_LAST_SLASH_RE = %r{/(?=[^/])}
 
-    attr_reader :payload, :path_portion, :parent, :children
+    attr_reader :payload, :path_portion, :parent, :children, :meta_data
 
     def self.from_resource_list(resources)
       root_node = ResourceTree.new('/')
@@ -15,10 +15,11 @@ module Specroutes
       root_node
     end
 
-    def initialize(path_portion, parent=nil)
+    def initialize(path_portion, parent=nil, meta=nil)
       @path_portion = path_portion
       @payload = []
       @children = []
+      @meta_data = Array(meta).flatten
       @parent = parent
       parent.register(self) if parent
     end
@@ -59,9 +60,12 @@ module Specroutes
       if resource.resource_part_stack.any?
         part_path = resource.resource_part_stack.map { |p| p.path }.join
         part_path = part_path.sub(path, '')
-        id_path = reduced_path.sub("#{part_path}/", '').
+        id_path_part = reduced_path.sub("#{part_path}/", '').
           split(WITHOUT_LAST_SLASH_RE)
-        resource.resource_part_stack.map { |p| p.clean_path } + id_path
+        part_path_part = resource.resource_part_stack.map do |part|
+          [part.clean_path, part.meta]
+        end
+        part_path_part + id_path_part
       else
         reduced_path.split(WITHOUT_LAST_SLASH_RE)
       end
@@ -75,9 +79,10 @@ module Specroutes
       end
     end
 
-    def child_for!(portion, node)
+    def child_for!(combined_portion, node)
+      portion, meta = combined_portion
       child = children.find { |c| c.path_portion == portion }
-      child or ResourceTree.new(portion, node)
+      child or ResourceTree.new(portion, node, meta)
     end
 
     def each_node(&block)
