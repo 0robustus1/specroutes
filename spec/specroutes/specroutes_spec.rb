@@ -20,7 +20,11 @@ describe Specroutes do
   context 'when providing a valid route-definition' do
     let(:spec_routes) do
       Specroutes.define(rails_routes) do
-        specified_get '/valid?valid=xsd:boolean' => 'valid#index'
+        specified_get '/valid?valid=xsd:boolean' => 'valid#index' do
+          reroute_on_mime 'application/json', to: 'api/valid#index'
+          reroute_on_header header: 'API-Version', value: 'v1',
+            to: 'api/v1/valid#index'
+        end
       end
     end
 
