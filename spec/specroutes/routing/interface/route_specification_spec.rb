@@ -6,7 +6,7 @@ describe Specroutes::Routing::Interface::RouteSpecification do
       let(:constraint) { Specroutes::Constraints::BaseConstraint.new }
       let(:route) { {'/simple?constraint=bool' => 'simple#index'} }
       let(:args) { route.merge(constraints: constraint) }
-      let(:specification) { described_class.new('get', [args]) }
+      let(:specification) { described_class.new('get', [args], []) }
 
       before do
         specification.define_constraints

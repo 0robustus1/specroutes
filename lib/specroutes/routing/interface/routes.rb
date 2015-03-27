@@ -26,7 +26,6 @@ module Specroutes::Routing
       end
 
       def specified_match(method, *args, &block)
-        current_stack = @resource_part_stack.dup
         spec = RouteSpecification.new(method, args, current_stack, &block)
         spec.define_constraints
         spec.on_match_calls do |match_options, match_block|
@@ -35,6 +34,10 @@ module Specroutes::Routing
         spec.register(specification)
       end
 
+      private
+      def current_stack
+        @resource_part_stack ? @resource_part_stack.dup : []
+      end
     end
   end
 end

@@ -57,7 +57,7 @@ module Specroutes
     end
 
     def metafied_portions(reduced_path, resource)
-      if resource.resource_part_stack.any?
+      if resource_partionable?(resource)
         part_path = resource.resource_part_stack.map { |p| p.path }.join
         part_path = part_path.sub(path, '')
         id_path_part = reduced_path.sub("#{part_path}/", '').
@@ -90,6 +90,12 @@ module Specroutes
         block.call(self) if parent
         children.each { |c| c.each_node(&block) }
       end
+    end
+
+    private
+    def resource_partionable?(resource)
+      resource.respond_to?(:resource_part_stack) &&
+        resource.resource_part_stack.any?
     end
   end
 end
