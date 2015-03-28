@@ -1,5 +1,7 @@
 # specroutes
 
+[![Join the chat at https://gitter.im/0robustus1/specroutes](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/0robustus1/specroutes?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Build Status](https://travis-ci.org/0robustus1/specroutes.svg?branch=master)](https://travis-ci.org/0robustus1/specroutes)
 [![Coverage Status](https://img.shields.io/coveralls/0robustus1/specroutes.svg)](https://coveralls.io/r/0robustus1/specroutes)
 
