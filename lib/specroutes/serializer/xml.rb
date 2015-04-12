@@ -8,6 +8,7 @@ module Specroutes::Serializer
     NS_XSI = 'http://www.w3.org/2001/XMLSchema-instance'
     NS_WADL = 'http://wadl.dev.java.net/2009/02'
     NS_WADL_LOCATION = 'http://www.w3.org/Submission/wadl/wadl.xsd'
+    NS_JSON_SCHEMA = 'http://wadl.dev.java.net/2009/02/json-schema'
 
     DATATYPE_MAPPING = {
       string: 'xsd:string',
@@ -43,12 +44,17 @@ module Specroutes::Serializer
 
     def define_application(document)
       application_el = ::XML::Node.new('application')
-      application_el['xmlns:xsd'] = NS_XSD
-      application_el['xmlns:xsi'] = NS_XSI
-      application_el['xsi:schemaLocation'] = "#{NS_WADL} #{NS_WADL_LOCATION}"
-      application_el['xmlns'] = NS_WADL
+      establish_namespaces!(application_el)
       document.root = application_el
       yield application_el if block_given?
+    end
+
+    def establish_namespaces!(root_el)
+      root_el['xmlns:xsd'] = NS_XSD
+      root_el['xmlns:xsi'] = NS_XSI
+      root_el['xsi:schemaLocation'] = "#{NS_WADL} #{NS_WADL_LOCATION}"
+      root_el['xmlns'] = NS_WADL
+      root_el['xmlns:json'] = NS_JSON_SCHEMA
     end
 
     def define_resources(application_el, base:)
@@ -130,16 +136,20 @@ module Specroutes::Serializer
     def define_response!(method_el, status_code, resource)
       response_el = ::XML::Node.new('response')
       response_el['status'] = status_code
-      resource.meta.accepts.each do |mime_type|
-        define_representation!(response_el, mime_type)
+      representations = resource.meta.response_representations[status_code]
+      if representations
+        representations.each_pair do |mime_type, json|
+          define_representation!(response_el, mime_type, json: json)
+        end
       end
       method_el << response_el
       response_el
     end
 
-    def define_representation!(response_el, mime_type)
+    def define_representation!(response_el, mime_type, json: nil)
       representation_el = ::XML::Node.new('representation')
       representation_el['mediaType'] = mime_type
+      representation_el['json:describedby'] = json if json
       response_el << representation_el
       representation_el
     end
