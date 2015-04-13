@@ -96,10 +96,14 @@ module Specroutes::Serializer
     end
 
     def define_params!(method_el, resource)
-      if resource.query_params.any?
+      if resource.query_params.any? || resource.meta.request_representations.any?
         define_request!(method_el) do |request_el|
           resource.query_params.each do |query_param|
             define_param!(request_el, query_param, resource)
+          end
+          representations = resource.meta.request_representations
+          representations.each_pair do |mime_type, json|
+            define_representation!(request_el, mime_type, json: json)
           end
         end
       end
