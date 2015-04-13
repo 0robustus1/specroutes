@@ -14,6 +14,10 @@ module Specroutes::Routing
         specified_match('put', *args, &block)
       end
 
+      def specified_patch(*args, &block)
+        specified_match('patch', *args, &block)
+      end
+
       def specified_delete(*args, &block)
         specified_match('delete', *args, &block)
       end
