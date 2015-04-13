@@ -66,7 +66,7 @@ module Specroutes::Serializer
 
     def define_resource!(parent_el, node)
       resource_el = ::XML::Node.new('resource')
-      resource_el['path'] = node.path_portion
+      resource_el['path'] = "#{node.path_portion}/"
       node.payload.each { |r| define_method!(resource_el, r) }
       parent_el << resource_el
       resource_el
