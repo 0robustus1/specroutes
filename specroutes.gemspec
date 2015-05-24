@@ -25,6 +25,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency "pry-rails", "~> 0.3.4"
   s.add_development_dependency "pry-doc", "~> 0.6.0"
   s.add_development_dependency "pry-byebug", "~> 3.1.0"
-  s.add_development_dependency "simplecov", "~> 0.7.1"
-  s.add_development_dependency "coveralls", "~> 0.7.0"
+  s.add_development_dependency "simplecov", "~> 0.10.0"
+  s.add_development_dependency "coveralls", "~> 0.8.1"
 end
